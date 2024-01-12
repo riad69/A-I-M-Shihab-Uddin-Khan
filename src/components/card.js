@@ -11,14 +11,44 @@ import photo4 from '../assets/photo-4.jpeg';
 import Modal from "./modal";
 
 export const Card = () => {
+    const [selectedFile, setSelectedFile] = useState(null);
     const [showModal, setShowModal] = useState(false);
-
+  
     const handleShowModal = () => {
       setShowModal(true);
     };
   
     const handleCloseModal = () => {
       setShowModal(false);
+    };
+  
+    const handleFileChange = (event) => {
+      const file = event.target.files[0];
+      setSelectedFile(file);
+    };
+  
+    const handleUpload = () => {
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+  
+        fetch('http://localhost:3000/upload', {
+          method: 'POST',
+          body: formData,
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('File uploaded successfully:', data);
+            handleCloseModal();  // Close the modal after successful upload
+          })
+          .catch(error => {
+            console.error('Error uploading file:', error);
+            // Handle the error, display a message, etc.
+          });
+      } else {
+        // Handle the case where no file is selected
+        console.warn('Please select a file before uploading.');
+      }
     };
   return (
     <div className='card'>
@@ -50,11 +80,13 @@ export const Card = () => {
             <PiChatsTeardrop className='logos'/>
             <p>15</p>
             <div>
-                <LuPaperclip className='logos' onClick={handleShowModal} />
-
-                <Modal showModal={showModal} handleClose={handleCloseModal} />
-            </div>
+            <LuPaperclip className='logos' onClick={handleShowModal} />
+            <Modal showModal={showModal} handleClose={handleCloseModal}>
+                <input type="file" onChange={handleFileChange} />
+                <button onClick={handleUpload}>Upload</button>
+            </Modal>
             <p>25</p>
+            </div>
             <FaRegCalendarDays  className='logos'/>
             <p>30-12-2022</p>
             
