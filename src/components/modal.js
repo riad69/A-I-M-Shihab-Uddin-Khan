@@ -33,7 +33,7 @@ const Modal = ({ showModal, handleClose }) => {
             </ul>
           </div>
           <div className="modal-footer">
-            <button type="button" onClick={() => alert('Implement your Done functionality')}>Done</button>
+             <button type="button" onClick={() => { handleClose() }}>Done</button>
           </div>
         </div>
       </div>
