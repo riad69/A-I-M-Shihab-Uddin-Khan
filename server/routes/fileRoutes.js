@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router(); // Use express.Router() directly
+const router = express.Router();
 
 const mongoose = require('mongoose');
 
@@ -9,7 +9,15 @@ const File = mongoose.model('File', {
   contentType: String,
 });
 
-// Endpoint to retrieve a specific file by ID
+router.post('/upload', async (req, res) => {
+  try {
+    res.json({ message: 'File uploaded successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const fileId = req.params.id;
@@ -20,11 +28,9 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'File not found' });
     }
 
-    // Set response headers to specify content type and disposition
     res.setHeader('Content-Type', file.contentType);
     res.setHeader('Content-Disposition', `attachment; filename=${file.name}`);
 
-    // Send the file data
     res.send(file.data);
   } catch (error) {
     console.error(error);
@@ -32,4 +38,4 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-module.exports = router; // Export the router directly
+module.exports = router;
